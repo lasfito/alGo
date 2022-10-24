@@ -14,78 +14,40 @@ import (
 
 func main() {
 
-	arr := []int{1, 2, 3}
-	fmt.Println(ThreeNumberSum(arr, 7))
+	arr := []int{-8, -6, 12, 3, 1, 2, 5, 6}
+	fmt.Println(ThreeNumberSum(arr, 0))
 }
 
 func ThreeNumberSum(array []int, target int) [][]int {
 
-	twoSums := make(map[int][][]int)
 	sort.Ints(array)
-	// indexMitad := math.Ceil(float64(len(array)) / 2)
+	triplets := [][]int{}
 
 	for i, v := range array {
-		// if i > int(indexMitad) {
-		// 	continue
-		// }
-		for j, v2 := range array {
-			if i == j {
-				continue
+
+		if i == len(array)-1 {
+			break
+		}
+		left := i + 1
+		right := len(array) - 1
+
+		for left < right {
+			currentSum := v + array[left] + array[right]
+			if currentSum == target {
+				currentTriplet := []int{v, array[left], array[right]}
+				triplets = append(triplets, currentTriplet)
+				left += 1
+				right -= 1
 			}
-			twoSums[v+v2] = append(twoSums[v+v2], []int{v, v2})
-		}
-	}
-
-	var triplets [][]int
-
-	for _, v := range array {
-		needVal := twoSums[target-v]
-		usedNumbers := make(map[int]bool)
-
-		for _, arr := range needVal {
-
-			prime := arr[0]
-			secuns := arr[1]
-
-			if (prime == v) || (secuns == v) {
-				continue
+			if currentSum < target {
+				left += 1
 			}
-			if (usedNumbers[prime] != false) && (usedNumbers[secuns] != false) {
-				currTriplet := []int{v, prime, secuns}
-				sort.Ints(currTriplet)
-				triplets = append(triplets, currTriplet)
+			if currentSum > target {
+				right -= 1
 			}
-			usedNumbers[prime] = true
-			usedNumbers[secuns] = true
 
 		}
 
-	}
-
-	if len(triplets) == 0 {
-		return triplets
-	}
-
-	for _, arr := range triplets {
-		sort.Ints(arr)
-	}
-
-	for i, arr := range triplets {
-		if i == len(triplets)-1 {
-			continue
-		}
-		if arr[0] > triplets[i+1][0] {
-			triplets[i], triplets[i+1] = triplets[i+1], triplets[i]
-		}
-	}
-
-	for i, arr := range triplets {
-		if i == len(triplets)-1 {
-			continue
-		}
-		if arr[1] > triplets[i+1][1] && arr[0] == triplets[i+1][0] {
-			triplets[i], triplets[i+1] = triplets[i+1], triplets[i]
-		}
 	}
 
 	return triplets
